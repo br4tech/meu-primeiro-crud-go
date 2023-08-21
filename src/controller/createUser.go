@@ -1,11 +1,25 @@
 package controller
 
 import (
-	"github.com/br4tech/meu-primeiro-crud-go/src/configuration/rest_err"
+	"fmt"
+	"log"
+
+	"github.com/br4tech/meu-primeiro-crud-go/src/configuration/validation"
+	"github.com/br4tech/meu-primeiro-crud-go/src/controller/model/request"
 	"github.com/gin-gonic/gin"
 )
 
  func CreateUser(c *gin.Context) {
-	 err := rest_err.NewBadRequestError("Voce chamo a rota de forma errada")
-	 c.JSON(err.Code, err)
+	log.Println("Init CreateUser controller")	
+	var UserRequest request.UserRequest
+
+	 if err := c.ShouldBindJSON(&UserRequest); err != nil {
+		log.Printf("Error trying to marshal object, error=%s\n", err.Error())
+		errRest := validation.ValidateUserError(err)
+		
+		c.JSON(errRest.Code,errRest)
+		return
+	 }
+
+	 fmt.Println(UserRequest)
  }
