@@ -20,9 +20,9 @@ var (
 func init() {
 	if val, ok :=	binding.Validator.Engine().(*validator.Validate); ok {
 		en := en.New()
-		unt := ut.New(en, en)
+		un := ut.New(en, en)
 
-		transl, _:= unt.GetTranslator("en") 
+		transl, _= un.GetTranslator("en") 
 
 		en_translation.RegisterDefaultTranslations(val, transl)
 	}
