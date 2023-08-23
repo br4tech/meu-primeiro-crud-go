@@ -1,30 +1,50 @@
 package controller
 
 import (
-	"fmt"
-	"log"
+	"net/http"
 
 	"github.com/br4tech/meu-primeiro-crud-go/src/configuration/logger"
 	"github.com/br4tech/meu-primeiro-crud-go/src/configuration/validation"
 	"github.com/br4tech/meu-primeiro-crud-go/src/controller/model/request"
+	"github.com/br4tech/meu-primeiro-crud-go/src/model"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
 
- func CreateUser(c *gin.Context) {
+var (
+	UserDomainInterface model.UserDomainInterface
+)
+
+func CreateUser(c *gin.Context) {
 	logger.Info("Init CreateUser controller",
-		zap.String("journey","createUser"),
+		zap.String("journey", "createUser"),
 	)
 
-	var UserRequest request.UserRequest
+	var userRequest request.UserRequest
 
-	 if err := c.ShouldBindJSON(&UserRequest); err != nil {
-		log.Printf("Error trying to marshal object, error=%s\n", err.Error())
+	if err := c.ShouldBindJSON(&userRequest); err != nil {
+		logger.Error("Error trying to validate user info", err,
+			zap.String("journey", "createUser"))
 		errRest := validation.ValidateUserError(err)
-		
-		c.JSON(errRest.Code,errRest)
-		return
-	 }
 
-	 fmt.Println(UserRequest)
- }
+		c.JSON(errRest.Code, errRest)
+
+		return
+	}
+
+	domain := model.NewUserDomain(
+		userRequest.Email,
+		userRequest.Password,
+		userRequest.Name,
+		userRequest.Age)
+
+	if err := domain.CreateUser(); err != nil {
+		c.JSON(err.Code, err)
+		return
+	}
+
+	logger.Info("User created successfully",
+		zap.String("journey", "createUser"))
+
+	c.String(http.StatusOK, "")
+}
