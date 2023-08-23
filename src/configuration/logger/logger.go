@@ -25,12 +25,12 @@ func init(){
 			TimeKey: "time",
 			MessageKey: "message",
 			EncodeTime:  zapcore.ISO8601TimeEncoder,
-			EncodeLevel: zapcore.LowercaseColorLevelEncoder,
+			EncodeLevel: zapcore.LowercaseLevelEncoder,
 			EncodeCaller: zapcore.ShortCallerEncoder,
 		},
 	}
 	
-	log, _ = logConfig.Build()
+	log, _= logConfig.Build()
 }
 
 func Info(message string, tags ...zap.Field) {
