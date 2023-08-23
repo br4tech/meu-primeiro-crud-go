@@ -1,6 +1,6 @@
 module github.com/br4tech/meu-primeiro-crud-go
 
-go 1.18
+go 1.19
 
 require (
 	github.com/bytedance/sonic v1.10.0 // indirect

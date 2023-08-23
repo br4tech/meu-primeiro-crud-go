@@ -21,16 +21,16 @@ func init(){
 		Level: zap.NewAtomicLevelAt(getLevelLogs()),
 		Encoding: "json",
     EncoderConfig: zapcore.EncoderConfig{
-			LevelKey: "nivel",
-			TimeKey: "tempo",
-			MessageKey: "mensagem",
+			LevelKey: "level",
+			TimeKey: "time",
+			MessageKey: "message",
 			EncodeTime:  zapcore.ISO8601TimeEncoder,
 			EncodeLevel: zapcore.LowercaseColorLevelEncoder,
 			EncodeCaller: zapcore.ShortCallerEncoder,
 		},
 	}
 	
-	log _ = logConfig.Build()
+	log, _ = logConfig.Build()
 }
 
 func Info(message string, tags ...zap.Field) {
@@ -39,13 +39,13 @@ func Info(message string, tags ...zap.Field) {
 }
 
 func Error(message string, err error, tags ...zap.Field) {
-	tags = append(tags, zap.NameError("error", err))
+	tags = append(tags, zap.NamedError("error", err))
 	log.Info(message, tags...)
 	log.Sync()
 }
 
 func getOutputLogs() string {
-	output := strings.ToLower(string.TrimSpace(os.Getenv(LOG_OUTPUT)))
+	output := strings.ToLower(strings.TrimSpace(os.Getenv(LOG_OUTPUT)))
   if output == "" {
 		return "stdout"
 	}
